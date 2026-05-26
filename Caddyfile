@@ -1,0 +1,5 @@
+# Caddy fetches a Let's Encrypt cert automatically on first request.
+app.contractor-crm.com {
+    encode zstd gzip
+    reverse_proxy server:3000
+}
