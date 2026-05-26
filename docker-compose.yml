@@ -17,7 +17,7 @@ services:
     restart: always
 
   server:
-    image: twentycrm/twenty:${TAG}
+    image: ghcr.io/djmarketing/contractor-crm:${TAG:-latest}
     volumes:
       - server-local-data:/app/packages/twenty-server/.local-storage
     expose:
@@ -78,7 +78,7 @@ services:
     restart: always
 
   worker:
-    image: twentycrm/twenty:${TAG}
+    image: ghcr.io/djmarketing/contractor-crm:${TAG:-latest}
     volumes:
       - server-local-data:/app/packages/twenty-server/.local-storage
     command: ["yarn", "worker:prod"]
