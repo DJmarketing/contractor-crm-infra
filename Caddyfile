@@ -1,5 +1,10 @@
-# Caddy fetches a Let's Encrypt cert automatically on first request.
-app.contractor-crm.com {
+# Multi-workspace: serve the apex + every workspace subdomain.
+# Caddy obtains a Let's Encrypt wildcard cert via the Cloudflare DNS-01 challenge.
+# Cloudflare must be set to DNS-only (grey cloud) for these records.
+*.contractor-crm.com, contractor-crm.com {
     encode zstd gzip
+    tls {
+        dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+    }
     reverse_proxy server:3000
 }

@@ -4,10 +4,13 @@ name: twenty
 
 services:
   caddy:
-    image: caddy:2-alpine
+    build:
+      context: ./caddy
     ports:
       - "80:80"
       - "443:443"
+    environment:
+      CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy-data:/data
@@ -27,6 +30,10 @@ services:
       PG_DATABASE_URL: postgres://${PG_DATABASE_USER}:${PG_DATABASE_PASSWORD}@db:5432/default
       SERVER_URL: ${SERVER_URL}
       REDIS_URL: redis://redis:6379
+
+      # Multi-workspace (subdomain per workspace)
+      IS_MULTIWORKSPACE_ENABLED: ${IS_MULTIWORKSPACE_ENABLED:-false}
+      DEFAULT_SUBDOMAIN: ${DEFAULT_SUBDOMAIN:-app}
 
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
       FALLBACK_ENCRYPTION_KEY: ${FALLBACK_ENCRYPTION_KEY:-}
@@ -88,6 +95,9 @@ services:
       REDIS_URL: redis://redis:6379
       DISABLE_DB_MIGRATIONS: "true"
       DISABLE_CRON_JOBS_REGISTRATION: "true"
+
+      IS_MULTIWORKSPACE_ENABLED: ${IS_MULTIWORKSPACE_ENABLED:-false}
+      DEFAULT_SUBDOMAIN: ${DEFAULT_SUBDOMAIN:-app}
 
       STORAGE_TYPE: s3
       STORAGE_S3_REGION: ${STORAGE_S3_REGION}
