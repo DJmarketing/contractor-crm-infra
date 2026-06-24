@@ -55,22 +55,34 @@ services:
       EMAIL_SMTP_USER: ${EMAIL_SMTP_USER}
       EMAIL_SMTP_PASSWORD: ${EMAIL_SMTP_PASSWORD}
 
-      # Optional Google OAuth / Gmail / Calendar — uncomment after creating credentials
-      # AUTH_GOOGLE_CLIENT_ID: ${AUTH_GOOGLE_CLIENT_ID}
-      # AUTH_GOOGLE_CLIENT_SECRET: ${AUTH_GOOGLE_CLIENT_SECRET}
-      # AUTH_GOOGLE_CALLBACK_URL: ${SERVER_URL}/auth/google/redirect
-      # AUTH_GOOGLE_APIS_CALLBACK_URL: ${SERVER_URL}/auth/google-apis/redirect
-      # MESSAGING_PROVIDER_GMAIL_ENABLED: "true"
-      # CALENDAR_PROVIDER_GOOGLE_ENABLED: "true"
+      # Google OAuth / Gmail / Calendar — keys pulled from .env. AUTH_GOOGLE_ENABLED
+      # gates the "Continue with Google" sign-in button; the MESSAGING_* / CALENDAR_*
+      # flags gate the email + calendar sync features inside the app.
+      AUTH_GOOGLE_ENABLED: ${AUTH_GOOGLE_ENABLED:-false}
+      AUTH_GOOGLE_CLIENT_ID: ${AUTH_GOOGLE_CLIENT_ID:-}
+      AUTH_GOOGLE_CLIENT_SECRET: ${AUTH_GOOGLE_CLIENT_SECRET:-}
+      AUTH_GOOGLE_CALLBACK_URL: ${SERVER_URL}/auth/google/redirect
+      AUTH_GOOGLE_APIS_CALLBACK_URL: ${SERVER_URL}/auth/google-apis/get-access-token
+      MESSAGING_PROVIDER_GMAIL_ENABLED: ${MESSAGING_PROVIDER_GMAIL_ENABLED:-false}
+      CALENDAR_PROVIDER_GOOGLE_ENABLED: ${CALENDAR_PROVIDER_GOOGLE_ENABLED:-false}
 
-      # Optional Microsoft OAuth / Outlook / Calendar
-      # AUTH_MICROSOFT_ENABLED: "true"
-      # AUTH_MICROSOFT_CLIENT_ID: ${AUTH_MICROSOFT_CLIENT_ID}
-      # AUTH_MICROSOFT_CLIENT_SECRET: ${AUTH_MICROSOFT_CLIENT_SECRET}
-      # AUTH_MICROSOFT_CALLBACK_URL: ${SERVER_URL}/auth/microsoft/redirect
-      # AUTH_MICROSOFT_APIS_CALLBACK_URL: ${SERVER_URL}/auth/microsoft-apis/redirect
-      # MESSAGING_PROVIDER_MICROSOFT_ENABLED: "true"
-      # CALENDAR_PROVIDER_MICROSOFT_ENABLED: "true"
+      # Microsoft OAuth / Outlook / Calendar — same pattern
+      AUTH_MICROSOFT_ENABLED: ${AUTH_MICROSOFT_ENABLED:-false}
+      AUTH_MICROSOFT_CLIENT_ID: ${AUTH_MICROSOFT_CLIENT_ID:-}
+      AUTH_MICROSOFT_CLIENT_SECRET: ${AUTH_MICROSOFT_CLIENT_SECRET:-}
+      AUTH_MICROSOFT_CALLBACK_URL: ${SERVER_URL}/auth/microsoft/redirect
+      AUTH_MICROSOFT_APIS_CALLBACK_URL: ${SERVER_URL}/auth/microsoft-apis/get-access-token
+      MESSAGING_PROVIDER_MICROSOFT_ENABLED: ${MESSAGING_PROVIDER_MICROSOFT_ENABLED:-false}
+      CALENDAR_PROVIDER_MICROSOFT_ENABLED: ${CALENDAR_PROVIDER_MICROSOFT_ENABLED:-false}
+
+      # LLM provider API keys — used by Twenty's AI features (admin panel chooses model).
+      # Anthropic is the primary; others are optional fallbacks.
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+
+      # Telemetry opt-out
+      TELEMETRY_ENABLED: "false"
 
     depends_on:
       db:
@@ -116,6 +128,29 @@ services:
       EMAIL_SMTP_PORT: ${EMAIL_SMTP_PORT}
       EMAIL_SMTP_USER: ${EMAIL_SMTP_USER}
       EMAIL_SMTP_PASSWORD: ${EMAIL_SMTP_PASSWORD}
+
+      # OAuth (worker needs the same creds for background sync of Gmail/Outlook + Calendar)
+      AUTH_GOOGLE_ENABLED: ${AUTH_GOOGLE_ENABLED:-false}
+      AUTH_GOOGLE_CLIENT_ID: ${AUTH_GOOGLE_CLIENT_ID:-}
+      AUTH_GOOGLE_CLIENT_SECRET: ${AUTH_GOOGLE_CLIENT_SECRET:-}
+      AUTH_GOOGLE_CALLBACK_URL: ${SERVER_URL}/auth/google/redirect
+      AUTH_GOOGLE_APIS_CALLBACK_URL: ${SERVER_URL}/auth/google-apis/get-access-token
+      MESSAGING_PROVIDER_GMAIL_ENABLED: ${MESSAGING_PROVIDER_GMAIL_ENABLED:-false}
+      CALENDAR_PROVIDER_GOOGLE_ENABLED: ${CALENDAR_PROVIDER_GOOGLE_ENABLED:-false}
+
+      AUTH_MICROSOFT_ENABLED: ${AUTH_MICROSOFT_ENABLED:-false}
+      AUTH_MICROSOFT_CLIENT_ID: ${AUTH_MICROSOFT_CLIENT_ID:-}
+      AUTH_MICROSOFT_CLIENT_SECRET: ${AUTH_MICROSOFT_CLIENT_SECRET:-}
+      AUTH_MICROSOFT_CALLBACK_URL: ${SERVER_URL}/auth/microsoft/redirect
+      AUTH_MICROSOFT_APIS_CALLBACK_URL: ${SERVER_URL}/auth/microsoft-apis/get-access-token
+      MESSAGING_PROVIDER_MICROSOFT_ENABLED: ${MESSAGING_PROVIDER_MICROSOFT_ENABLED:-false}
+      CALENDAR_PROVIDER_MICROSOFT_ENABLED: ${CALENDAR_PROVIDER_MICROSOFT_ENABLED:-false}
+
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+
+      TELEMETRY_ENABLED: "false"
 
     depends_on:
       db:
