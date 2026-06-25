@@ -84,6 +84,11 @@ services:
       # Telemetry opt-out
       TELEMETRY_ENABLED: "false"
 
+      # CODE-step workflows (incl. stock "Create company when adding a new person"):
+      # LOCAL runs the JS inside the worker process. Defaults to DISABLED in prod
+      # which silently no-ops CODE steps and breaks any workflow that uses one.
+      LOGIC_FUNCTION_TYPE: ${LOGIC_FUNCTION_TYPE:-LOCAL}
+
     depends_on:
       db:
         condition: service_healthy
@@ -151,6 +156,9 @@ services:
       GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
 
       TELEMETRY_ENABLED: "false"
+
+      # CODE-step workflows — runs JS inside the worker process
+      LOGIC_FUNCTION_TYPE: ${LOGIC_FUNCTION_TYPE:-LOCAL}
 
     depends_on:
       db:
