@@ -89,6 +89,14 @@ services:
       # which silently no-ops CODE steps and breaks any workflow that uses one.
       LOGIC_FUNCTION_TYPE: ${LOGIC_FUNCTION_TYPE:-LOCAL}
 
+      # AI chat code interpreter (Python sandbox for analyzing uploaded CSVs/xlsx,
+      # generating charts, etc). LOCAL = shells out to python3 in the container
+      # (the Dockerfile installs python3 + pandas + openpyxl + numpy + pillow).
+      # Disabled in prod by default; safe-ish only because we're single-franchise —
+      # switch to E2B before onboarding a second customer (raw subprocess Python
+      # in a shared container is not a multi-tenant isolation boundary).
+      CODE_INTERPRETER_TYPE: ${CODE_INTERPRETER_TYPE:-LOCAL}
+
     depends_on:
       db:
         condition: service_healthy
@@ -159,6 +167,9 @@ services:
 
       # CODE-step workflows — runs JS inside the worker process
       LOGIC_FUNCTION_TYPE: ${LOGIC_FUNCTION_TYPE:-LOCAL}
+
+      # AI chat code interpreter — runs Python in the worker container (matches server)
+      CODE_INTERPRETER_TYPE: ${CODE_INTERPRETER_TYPE:-LOCAL}
 
     depends_on:
       db:
