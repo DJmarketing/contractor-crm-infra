@@ -205,7 +205,34 @@ services:
       retries: 10
     restart: always
 
+  # WorkCenter bridge — pushes won Jobs from the CRM into SERVPRO WorkCenter 2.0 via
+  # hardened Playwright automation. Internal only; the Twenty worker reaches it at
+  # http://workcenter-bridge:8787. Config lives in .env (see .env.example). Runs headless
+  # Chromium (baked into the image), so give the box comfortable RAM.
+  workcenter-bridge:
+    image: ghcr.io/djmarketing/contractor-crm-integrations:${WC_BRIDGE_TAG:-latest}
+    expose:
+      - "8787"
+    environment:
+      WC_LOGIN_URL: ${WC_LOGIN_URL}
+      WC_BASE_URL: ${WC_BASE_URL}
+      WC_INTAKE_URL: ${WC_INTAKE_URL}
+      WORKCENTER_USERNAME: ${WORKCENTER_USERNAME}
+      WORKCENTER_PASSWORD: ${WORKCENTER_PASSWORD}
+      WORKCENTER_TOTP_SECRET: ${WORKCENTER_TOTP_SECRET}
+      WORKCENTER_PROXY_URL: ${WORKCENTER_PROXY_URL:-}
+      STEALTH_LEVEL: ${STEALTH_LEVEL:-full}
+      WC_DEFAULT_PRIORITY_RESPONDER: ${WC_DEFAULT_PRIORITY_RESPONDER:-}
+      TWENTY_API_URL: ${WC_TWENTY_API_URL}
+      TWENTY_API_KEY: ${WC_TWENTY_API_KEY}
+      BRIDGE_AUTH_TOKEN: ${BRIDGE_AUTH_TOKEN}
+      PORT: 8787
+    volumes:
+      - wc-bridge-session:/app/session
+    restart: unless-stopped
+
 volumes:
+  wc-bridge-session:
   db-data:
   redis-data:
   server-local-data:
